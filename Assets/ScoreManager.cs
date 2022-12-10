@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.Linq;
 
 public class ScoreManager : MonoBehaviour
 {
@@ -44,19 +45,15 @@ public class ScoreManager : MonoBehaviour
 
                     if (row.Length > 0)
                     {
-                        if (contentTransform.transform.childCount <= 7)
-                        {
-                            GameObject scorePanelClone = Instantiate(scorePanel, contentTransform);
-                            userList.Add(row[0], int.Parse(row[1]));
-
-                            scorePanelClone.transform.GetChild(0).GetComponent<Text>().text = row[0];
-                            scorePanelClone.transform.GetChild(2).GetComponent<Text>().text = row[1];
-                        }
+                        userList.Add(row[0], int.Parse(row[1]));
                     }
                 }
                 
                     
             }
+            
+            var sortedDict = from entry in userList orderby entry.Value ascending select entry;
+            AddScorePanel();
 
             
         }
@@ -64,6 +61,23 @@ public class ScoreManager : MonoBehaviour
         {
             Debug.Log("FAILED TO CONNECT");
         }
+    }
+
+    public void AddScorePanel()
+    {
+        var myList = userList.ToList();
+
+        myList.Sort((pair1,pair2) => pair2.Value.CompareTo(pair1.Value));
+
+        foreach (KeyValuePair<string, int> s in myList)
+        {
+            GameObject scorePanelClone = Instantiate(scorePanel, contentTransform);
+            
+            scorePanelClone.transform.GetChild(0).GetComponent<Text>().text = s.Key;
+            scorePanelClone.transform.GetChild(2).GetComponent<Text>().text = s.Value.ToString();
+        }
+
+        
     }
 
     public void PlayGame()
