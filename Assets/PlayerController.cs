@@ -19,13 +19,26 @@ public class PlayerController : MonoBehaviour
         {
             _rb.velocity = new Vector2(_rb.velocity.x, jumpForce);
         }
+
+        if (transform.position.y <= -4.4)
+        {
+            GameManager.Instance.TriggerGameOver();
+        }
     }
 
-    private void OnTriggerEnter(Collider other)
+
+    private void OnTriggerEnter2D(Collider2D col)
     {
-        if (other.CompareTag("PipeTrigger"))
+        if (col.CompareTag("PipeTrigger"))
         {
             GameManager.Instance.SpawnNewPipe();
+            GameManager.Instance.score++;
+        }
+        
+        if (col.CompareTag("PipeBlock"))
+        {
+            //GameOver
+            GameManager.Instance.TriggerGameOver();
         }
     }
 }

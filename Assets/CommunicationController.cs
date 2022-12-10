@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 
 public class CommunicationController : MonoBehaviour
 {
@@ -52,6 +53,7 @@ public class CommunicationController : MonoBehaviour
     public void LoginWeb()
     {
         StartCoroutine(Login(loginUrl));
+        SceneManager.LoadScene("MainMenu");
     }
 
     public void LogoutWeb()
