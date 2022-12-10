@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -27,7 +28,15 @@ public class ScoreManager : MonoBehaviour
 
         StartCoroutine(GetScoreOnLeaderboard(getScoreURL));
     }
-    
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            SceneManager.LoadScene("Main");
+        }
+    }
+
     IEnumerator GetScoreOnLeaderboard(string url)
     {
         UnityWebRequest www = UnityWebRequest.Get(url);

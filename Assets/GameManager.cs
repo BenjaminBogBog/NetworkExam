@@ -100,6 +100,8 @@ public class GameManager : MonoBehaviour
         if (www.result == UnityWebRequest.Result.Success)
         {
             Debug.Log(www.downloadHandler.text);
+            
+            SceneManager.LoadScene("MainMenu");
         }
         else
         {
