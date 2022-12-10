@@ -53,7 +53,6 @@ public class CommunicationController : MonoBehaviour
     public void LoginWeb()
     {
         StartCoroutine(Login(loginUrl));
-        SceneManager.LoadScene("MainMenu");
     }
 
     public void LogoutWeb()
@@ -143,6 +142,7 @@ public class CommunicationController : MonoBehaviour
                         PlayerPrefs.SetString("Username", username);
                         PlayerPrefs.SetString("Date", DateTime.Now.ToString());
                         PlayerPrefs.Save();
+                        SceneManager.LoadScene("MainMenu");
                         //Maybe open game?
                         //For Testing - open the logout canvas
                         logoutCanvas.gameObject.SetActive(true);
@@ -168,6 +168,7 @@ public class CommunicationController : MonoBehaviour
                         logoutCanvas.gameObject.SetActive(true);
                         loginCanvas.gameObject.SetActive(false);
                         errorCanvas.gameObject.SetActive(false);
+                        SceneManager.LoadScene("MainMenu");
                         break;
                 }
             }

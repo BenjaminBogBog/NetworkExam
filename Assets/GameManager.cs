@@ -99,7 +99,7 @@ public class GameManager : MonoBehaviour
 
         if (www.result == UnityWebRequest.Result.Success)
         {
-            Debug.Log("POSTED ENTRY");
+            Debug.Log(www.downloadHandler.text);
         }
         else
         {
