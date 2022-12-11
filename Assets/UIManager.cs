@@ -12,6 +12,7 @@ public class UIManager : MonoBehaviour
 
     public GameObject GameOverCanvas;
     public GameObject PlayerHUDCanvas;
+    public GameObject StartGameCanvas;
 
     private void Awake()
     {

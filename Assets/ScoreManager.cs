@@ -9,12 +9,19 @@ using System.Linq;
 
 public class ScoreManager : MonoBehaviour
 {
+    public static ScoreManager Instance;
     [SerializeField] private string getScoreURL;
     [SerializeField] private string logoutURL;
     
     [SerializeField] private Dictionary<string, int> userList;
     [SerializeField] private GameObject scorePanel;
     [SerializeField] private Transform contentTransform;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
     void Start()
     {
         if (userList == null)
@@ -29,13 +36,17 @@ public class ScoreManager : MonoBehaviour
         StartCoroutine(GetScoreOnLeaderboard(getScoreURL));
     }
 
-    private void Update()
+    public void RecalcLeaderboard()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        userList.Clear();
+        foreach (Transform t in contentTransform)
         {
-            SceneManager.LoadScene("Main");
+            Destroy(t.gameObject);
         }
+        
+        StartCoroutine(GetScoreOnLeaderboard(getScoreURL));
     }
+
 
     IEnumerator GetScoreOnLeaderboard(string url)
     {

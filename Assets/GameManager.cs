@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
+using UnityEngine.SocialPlatforms.Impl;
 using Random = UnityEngine.Random;
 
 public class GameManager : MonoBehaviour
@@ -16,13 +17,14 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float minPipeHeight;
     [SerializeField] private float maxPipeHeight;
     [SerializeField] private GameObject Scroller;
-    [HideInInspector] public GameObject player;
+    public GameObject player;
     [SerializeField] private Transform pipeDump;
     [SerializeField] private GameObject pipePrefab;
 
     [SerializeField] private string postURL;
 
     private bool GameOver;
+    private bool StartedGame;
 
     private void Awake()
     {
@@ -31,13 +33,14 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        player = GameObject.FindGameObjectWithTag("Player");
         score = 0;
         GameOver = false;
         
         UIManager.Instance.GameOverCanvas.SetActive(false);
+        UIManager.Instance.StartGameCanvas.SetActive(true);
         
-        Invoke("StartGame", 1.5f);
+        player.GetComponent<Rigidbody2D>().isKinematic = true;
+        StartedGame = false;
     }
 
     private void Update()
@@ -58,18 +61,33 @@ public class GameManager : MonoBehaviour
                 SceneManager.LoadScene("MainMenu");
             }
         }
-    }
 
-    void StartGame()
-    {
-        SpawnNewPipe();
+        if (!StartedGame)
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                UIManager.Instance.StartGameCanvas.SetActive(false);
+                player.GetComponent<Rigidbody2D>().isKinematic = false;
+                Invoke("SpawnNewPipe", 1.5f);
+                StartedGame = true;
+            }
+            
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                //Go back to main menu
+                SceneManager.LoadScene("MainMenu");
+            }
+        }
     }
 
     public void SpawnNewPipe()
     {
-        GameObject pipeClone = Instantiate(pipePrefab, new Vector3(player.transform.position.x + 12f, Random.Range(minPipeHeight, maxPipeHeight), 0), Quaternion.identity);
+        if (player)
+        {
+            GameObject pipeClone = Instantiate(pipePrefab, new Vector3(player.transform.position.x + 12f, Random.Range(minPipeHeight, maxPipeHeight), 0), Quaternion.identity);
         
-        pipeClone.transform.SetParent(pipeDump);
+            pipeClone.transform.SetParent(pipeDump);
+        }
     }
 
     public void TriggerGameOver()
@@ -100,8 +118,7 @@ public class GameManager : MonoBehaviour
         if (www.result == UnityWebRequest.Result.Success)
         {
             Debug.Log(www.downloadHandler.text);
-            
-            SceneManager.LoadScene("MainMenu");
+            ScoreManager.Instance.RecalcLeaderboard();
         }
         else
         {
