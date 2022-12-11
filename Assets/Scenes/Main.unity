@@ -2417,7 +2417,7 @@ PrefabInstance:
       objectReference: {fileID: 1464458584}
     - target: {fileID: 5569412991480805053, guid: 98182445f9f8a2b488cbd3d65959937f, type: 3}
       propertyPath: postURL
-      value: https://hera.nord.no/~347115/2022/ProgrammingClass/lobby/unity/post_leaderboard.php
+      value: https://hera.nord.no/~347115/2022/ProgrammingClass/lobby/unity/post_bestTimes.php
       objectReference: {fileID: 0}
     - target: {fileID: 5569412991480805053, guid: 98182445f9f8a2b488cbd3d65959937f, type: 3}
       propertyPath: Scroller
@@ -2427,5 +2427,13 @@ PrefabInstance:
       propertyPath: pipeDump
       value: 
       objectReference: {fileID: 505899868}
+    - target: {fileID: 5569412991480805053, guid: 98182445f9f8a2b488cbd3d65959937f, type: 3}
+      propertyPath: postBestTimeURL
+      value: https://hera.nord.no/~347115/2022/ProgrammingClass/lobby/unity/post_bestTimes.php
+      objectReference: {fileID: 0}
+    - target: {fileID: 5569412991480805053, guid: 98182445f9f8a2b488cbd3d65959937f, type: 3}
+      propertyPath: postLeaderboardURL
+      value: https://hera.nord.no/~347115/2022/ProgrammingClass/lobby/unity/post_leaderboard.php
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 98182445f9f8a2b488cbd3d65959937f, type: 3}

@@ -21,10 +21,13 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Transform pipeDump;
     [SerializeField] private GameObject pipePrefab;
 
-    [SerializeField] private string postURL;
+    [SerializeField] private string postLeaderboardURL;
+    [SerializeField] private string postBestTimeURL;
 
     private bool GameOver;
     private bool StartedGame;
+
+    private bool canRestart;
 
     private void Awake()
     {
@@ -41,6 +44,7 @@ public class GameManager : MonoBehaviour
         
         player.GetComponent<Rigidbody2D>().isKinematic = true;
         StartedGame = false;
+        canRestart = false;
     }
 
     private void Update()
@@ -48,7 +52,7 @@ public class GameManager : MonoBehaviour
         //Scroll
         Scroller.transform.position -= Vector3.right * speed * Time.deltaTime;
 
-        if (GameOver)
+        if (GameOver && canRestart)
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
@@ -102,7 +106,15 @@ public class GameManager : MonoBehaviour
         speed = 0;
         Destroy(player.gameObject);
 
-        StartCoroutine(PostScoreOnLeaderbaord(postURL));
+        StartCoroutine(PostScoreOnLeaderbaord(postLeaderboardURL));
+        StartCoroutine(PostBestTimes(postBestTimeURL));
+        canRestart = false;
+        Invoke("EnableRestart", 0.5f);
+    }
+
+    private void EnableRestart()
+    {
+        canRestart = true;
     }
     
 
@@ -119,6 +131,25 @@ public class GameManager : MonoBehaviour
         {
             Debug.Log(www.downloadHandler.text);
             ScoreManager.Instance.RecalcLeaderboard();
+        }
+        else
+        {
+            Debug.Log("FAILED TO CONNECT");
+        }
+    }
+    
+    IEnumerator PostBestTimes(string url)
+    {
+        List<IMultipartFormSection> formData = new List<IMultipartFormSection>();
+        formData.Add(new MultipartFormDataSection("username", PlayerPrefs.GetString("Username")));
+        formData.Add(new MultipartFormDataSection("score", score.ToString()));
+
+        UnityWebRequest www = UnityWebRequest.Post(url, formData);
+        yield return www.SendWebRequest();
+
+        if (www.result == UnityWebRequest.Result.Success)
+        {
+            Debug.Log(www.downloadHandler.text);
         }
         else
         {

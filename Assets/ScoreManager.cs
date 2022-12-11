@@ -10,12 +10,16 @@ using System.Linq;
 public class ScoreManager : MonoBehaviour
 {
     public static ScoreManager Instance;
+    [SerializeField] private string getBestTimeURL;
     [SerializeField] private string getScoreURL;
     [SerializeField] private string logoutURL;
     
     [SerializeField] private Dictionary<string, int> userList;
     [SerializeField] private GameObject scorePanel;
     [SerializeField] private Transform contentTransform;
+
+    [SerializeField] private List<int> bestTimes;
+    [SerializeField] private Text BestAttempt1Text, BestAttempt2Text, BestAttempt3Text, BestAttempt4Text, BestAttempt5Text;
 
     private void Awake()
     {
@@ -34,6 +38,9 @@ public class ScoreManager : MonoBehaviour
         }
 
         StartCoroutine(GetScoreOnLeaderboard(getScoreURL));
+        StartCoroutine(GetBestTimes(getBestTimeURL));
+        
+        
     }
 
     public void RecalcLeaderboard()
@@ -65,7 +72,10 @@ public class ScoreManager : MonoBehaviour
 
                     if (row.Length > 0)
                     {
-                        userList.Add(row[0], int.Parse(row[1]));
+                        if (userList.ContainsKey(row[0]))
+                            userList.Add(row[0], int.Parse(row[1]));
+                        else
+                            userList[row[0]] = int.Parse(row[1]);
                     }
                 }
                 
@@ -80,6 +90,42 @@ public class ScoreManager : MonoBehaviour
         else
         {
             Debug.Log("FAILED TO CONNECT");
+        }
+    }
+    
+    IEnumerator GetBestTimes(string url)
+    {
+        UnityWebRequest www = UnityWebRequest.Get(url);
+        yield return www.SendWebRequest();
+
+        if (www.result == UnityWebRequest.Result.Success)
+        {
+            string[] strBestTimes = www.downloadHandler.text.Split("_");
+
+            foreach (string s in strBestTimes)
+            {
+                bestTimes.Add(int.Parse(s));
+            }
+            
+            Debug.Log("Retrieved best times");
+            
+            DisplayBestTimes();
+        }
+        else
+        {
+            Debug.Log("FAILED TO CONNECT");
+        }
+    }
+
+    public void DisplayBestTimes()
+    {
+        if (bestTimes.Count > 0)
+        {
+            BestAttempt5Text.text = bestTimes[0].ToString();
+            BestAttempt4Text.text = bestTimes[1].ToString();
+            BestAttempt3Text.text = bestTimes[2].ToString();
+            BestAttempt2Text.text = bestTimes[3].ToString();
+            BestAttempt1Text.text = bestTimes[4].ToString();
         }
     }
 
